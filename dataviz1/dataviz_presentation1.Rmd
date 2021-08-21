@@ -1,0 +1,323 @@
+---
+title: "Intro to Data Visualization <br> in R for Research"
+subtitle: "Part 1: A Data Driven Hope"
+author: "Thomas Wise"
+output: 
+  ioslides_presentation:
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+
+
+## Session Contents
+
+- Intro to the Tidyverse
+- Plotting in R, *plot* vs *ggplot2*
+- Basics of ggplot2
+  + Core Functions
+  + Layering & Aesthetic Mapping 
+  + Chart types (using Geoms)
+  + Colours, Shapes and Size 
+  + Other Aesthetic Details 
+  
+## Objectives and Transferable Skills 
+
+<div style="float: left; width: 50%;">
+- To be able to: 
+  + Begin to generate simple visualizations from novel data 
+  + Begin to utilize good coding and data visualization practices 
+  + Begin to think constructively about data visualization 
+</div>
+
+<div style="float: right; width: 50%;">
+- Core Skills: 
+  + Data visualization in R
+  + Exploratory Data Analysis using visualization 
+  + Creative Problem solving and code debugging
+</div>
+
+  
+## Session Layout
+
+- 90 minutes long.
+- Heavily focused on Practical, with some theory and visual demonstrations 
+- When working on the practical content, feel free to work on your own, in pairs, in groups! 
+
+## Schedule
+
+<div style="float: left; width: 50%;">
+**Introduction** (15 minutes)
+
+- Intro to the Tidyverse  
+- *plot* vs *ggplot*  
+
+**Part 1** (30 minutes)
+
+- Basics of ggplot2 (1)  
+  + Core Functions & Structure  
+  + Layering and Aesthetics 
+  + Legends & Labels
+  
+**Break** (10 minutes)  
+</div>
+
+<div style="float: right; width: 50%;">
+**Part 2** (25 minutes)  
+
+- Basics of ggplot2 (2)  
+  + Chart Types (Geoms)
+  + Shapes, Colours and Size  
+  + Other Aesthetic Details  
+  
+**Review & Conclusion** (10 minutes)  
+
+- Review our Session  
+- Discuss content of next session  
+- Sharing examples  
+</div>
+
+# Introduction 
+
+## The Tidyverse 
+
+- A collection of R Packages designed specifically for data science.
+- This includes packages which are considered *core* in everyday data analysis.
+- These are designed to encourage uniform and consistent practice within data science programming. 
+
+- Packages include  
+  + *ggplot2*: Used for generating graphics 
+  + *dplyr*: Used for data manipulation 
+  + *tidyr*: Used for data cleaning and tidying 
+  + *readr*: Used to read and load data (like .csv, .tsv)
+  + And many, many more. 
+  
+## R for Data Science 
+
+- The *bible* for learning the tidyverse is [R for data science](https://r4ds.had.co.nz/)
+- This covers a general introduction to Tidyverse packages and goes from complete beginners through to basic skills. 
+- One useful tool, are the [RStudio Cheatsheets](https://rstudio.com/resources/cheatsheets/)
+
+## Ways to plot in R, plot vs ggplot2
+
+<div style="float: left; width: 45%;">
+
+```{r, fig.width = 4}
+plot(x = diamonds$carat,
+     y = diamonds$price)
+
+```
+
+</div>
+
+<div style="float: right; width: 45%;">
+
+```{r, fig.width = 4, fig.height = 4}
+ggplot(data = diamonds, 
+       mapping = aes(x = carat, 
+                     y = price)) + 
+  geom_point()
+
+```
+
+</div>
+
+## Plot vs ggplot2
+
+<div style="float: left; width: 45%;">
+**Plot**
+
+- Simple and Easy Method,
+- Can be used quickly without much coding experience,
+- Not useful for visualizing complex data or generating nice plots! 
+
+
+</div>
+<div style="float: right; width: 45%;">
+
+**ggplot2**
+
+- Complex, but highly adaptive, 
+- Layer based, and can be used for lots of different graph types,
+- Extremely useful for visualizing complex data and generating nice pleasing plots,
+
+</div>
+
+# Part 1
+
+## Basics of ggplot2
+
+- Your basic ggplot2 function contains the following: 
+- Core Function
+
+```{r, eval = FALSE}
+ggplot()
+```
+
+- Plotting Specification (geom)
+
+```{r, eval = FALSE}
+geom_point()
+geom_histogram()
+geom_line()
+```
+
+- Mapping Function & Data Specification
+
+```{r, eval = FALSE}
+mapping = aes(x, y)
+data = data
+```
+
+## ggplot2 in action 
+
+We can see this in action through the code: 
+
+```{r}
+
+ggplot(data = diamonds, 
+       mapping = aes(y = carat, x = price)) + 
+  geom_point()
+
+```
+
+## Our Data 
+
+- Kaggle data set [Online Video Gaming and Anxiety](https://www.kaggle.com/divyansh22/online-gaming-anxiety-data). 
+- 15,000 observations across 55 variables, for this workshop we will use a sample of 1,000
+- Selected for its Clinical Variables and High Usability. 
+
+- In general, we will explore the factors which influence an individuals anxiety score (GAD7 and SPIN), including the age of the player, platform, time spent playing as well as other factors. 
+
+## Exercise 1: Starting basic 
+
+Lets introduce this data set through covering the basics of ggplot2. 
+Lets firstly produce a histogram examining the distribution of the amount of hours played. 
+
+Data can be imported using the code provided in the worksheet! 
+You can either use the template provided in the worksheet or have a go without it! 
+
+## Exercise 1: Solution
+
+```{r, warning = FALSE, message = FALSE}
+## Import the data
+gamingstudy_data <- read_csv("data/gamingdata_samp.csv")
+
+## Plot the data 
+ggplot(data = gamingstudy_data, 
+       mapping = aes(x = Hours)) + 
+  geom_histogram()
+
+```
+
+## Exercise 2: Aesthetic Mapping 
+
+Next we can consider plotting a histogram of GAD scores (*GAD_T*), we can see that we need to consider aspects such as binwidth. 
+
+```{r}
+ggplot(data = gamingstudy_data, 
+       mapping = aes(x = GAD_T)) + 
+  geom_histogram(bins = 30)
+
+```
+
+Right now, the histogram uses the parameter *bins = 30*, however we can specify the *binwidth* to improve the plot. 
+
+## Exercise 2: Solution 
+
+```{r}
+
+## Plot the data 
+ggplot(data = gamingstudy_data, 
+       mapping = aes(x = GAD_T)) + 
+  geom_histogram(binwidth = 1)
+
+```
+
+## Excerise 3: Additional Aesthetic Mapping & Layers
+
+
+
+## Exercise 3: Solution
+
+```{r}
+## Plot the data 
+colours <- c("GAD" = "blue", "SPIN" = "red")
+
+ggplot(data = gamingstudy_data) + 
+  geom_histogram(mapping = aes(x = GAD_T, colour = "GAD"), binwidth = 1, alpha = 0.1) + 
+  geom_histogram(mapping = aes(x = SPIN_T, colour = "SPIN"), binwidth = 1, alpha = 0.1) + 
+  labs(colour = "Legend") + 
+  scale_color_manual(values = colours)
+
+```
+
+## Exercise 4: Labels & Legends
+
+
+## Exercise 4: Solution 
+
+```{r}
+## Plot the data 
+colours <- c("GAD" = "blue", "SPIN" = "red")
+
+ggplot(data = gamingstudy_data) + 
+  geom_histogram(mapping = aes(x = GAD_T, colour = "GAD"), binwidth = 1, alpha = 0.1) + 
+  geom_histogram(mapping = aes(x = SPIN_T, colour = "SPIN"), binwidth = 1, alpha = 0.1) + 
+  labs(x = "Anxiety Measure",
+       y = "Frequency", 
+       colour = "Legend") + 
+  scale_color_manual(values = colours)
+
+```
+
+## Exercise 5: Chart Types & Aesthetics 
+
+
+## Exercise 5: Soultion 
+
+```{r}
+
+
+
+```
+
+
+# Break (10 minutes)
+
+# Part 2
+
+## Chart Types 
+
+## Exercise 6: Different Types of Charts 
+
+## Exercise 6: Solution 
+
+## Exercise 7: Colours
+
+## Exercise 7: Solution
+
+## Exercise 8: Shapes and Sizes 
+
+## Exercise 8: Solution 
+
+## Exercise 9: Additional Aesthetic Layers & Details (2)
+
+## Exercise 9: Solution 
+
+# Review and Conclusion 
+
+## Review 
+
+## Plan for Next Session
+
+
+
+
+
+
